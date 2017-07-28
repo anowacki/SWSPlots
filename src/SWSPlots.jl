@@ -22,7 +22,17 @@ const SWSArr = Union{SWS, Array{SWS}}
 const PlotSubplot = Union{Plots.Plot,Plots.Subplot}
 
 """
-    plot_splits_bars!(p::Plots.Plot, splits::SWSArr) -> p::Plots.Plot
+    plot_splits_bars!(p::Plots.Plot, splits::SWSArr; km=false, scale=km?10:1e4, location=:station, kwargs...) -> p::Plots.Plot
+
+Add to a `Plot`, `p`, a set of bars whose azimuth is aligned with the fast orientations ϕ
+and whose length is proportional to δt, returning the modified `p`
+
+    plot_splits_bars(splits; kwargs...) -> p::Plots.Plot
+
+Return a new `Plot` `p`.
+
+Set `km` to `true` to divide all distances by `1e3`.  `scale` can be used to set the
+legnthscale of bars, and `location` can be one of `:station`, `:midpoint` or `:event`.
 """
 function plot_splits_bars!(p::PlotSubplot, splits::SWSArr;
         km=false, scale=km?10:1e4, location=:station, kwargs...)
@@ -49,7 +59,11 @@ function plot_splits_bars!(p::PlotSubplot, splits::SWSArr;
     p
 end
 plot_splits_bars(splits::SWSArr; kwargs...) = plot_splits_bars!(plot(), splits; kwargs...)
+@doc (@doc plot_splits_bars!) plot_splits_bars
 
+"""
+    plot_splits_hist!(p::Plots.Plot, splits::SWSArr; km=false, binwidth=20, maxsize=km?5:5e3, minobs=3, kwargs...)
+"""
 function plot_splits_hist!(p::PlotSubplot, splits::SWSArr;
         km=false, binwidth=20, maxsize=km?5:5e3, minobs=3, kwargs...)
     s = splits
@@ -65,6 +79,7 @@ function plot_splits_hist!(p::PlotSubplot, splits::SWSArr;
     p
 end
 plot_splits_hist(splits::SWSArr; kwargs...) = plot_splits_hist!(plot(), splits; kwargs...)
+
 
 """
     sta_coords(s) -> stas, x, y
